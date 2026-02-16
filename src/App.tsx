@@ -53,36 +53,12 @@ const App = () => {
             <Layout>
               <Routes>
                 {/* Protected Routes */}
-                <Route path="/" element={
-                  <ProtectedRoute>
-                    <Index />
-                  </ProtectedRoute>
-                } />
-                <Route path="/new-booking" element={
-                  <ProtectedRoute>
-                    <NewBooking />
-                  </ProtectedRoute>
-                } />
-                <Route path="/vehicles" element={
-                  <ProtectedRoute>
-                    <Vehicles />
-                  </ProtectedRoute>
-                } />
-                <Route path="/rentals" element={
-                  <ProtectedRoute>
-                    <Rentals />
-                  </ProtectedRoute>
-                } />
-                <Route path="/invoice/:id" element={
-                  <ProtectedRoute>
-                    <Invoice />
-                  </ProtectedRoute>
-                } />
-                <Route path="/agreement/:id" element={
-                  <ProtectedRoute>
-                    <Invoice />
-                  </ProtectedRoute>
-                } />
+                <Route path="/" element={<Index />} />
+                <Route path="/new-booking" element={<NewBooking />} />
+                <Route path="/vehicles" element={<Vehicles />} />
+                <Route path="/rentals" element={<Rentals />} />
+                <Route path="/invoice/:id" element={<Invoice />} />
+                <Route path="/agreement/:id" element={<Invoice />} />
                 
                 {/* Public Routes */}
                 <Route path="/login" element={<Login />} />
@@ -90,7 +66,6 @@ const App = () => {
                 <Route path="/about" element={<AboutUs />} />
                 <Route path="/privacy" element={<PrivacyPolicy />} />
                 <Route path="/terms" element={<TermsConditions />} />
-                <Route path="*" element={<NotFound />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </Layout>

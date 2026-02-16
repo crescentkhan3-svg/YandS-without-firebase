@@ -1,163 +1,63 @@
-import { 
-  collection, 
-  doc, 
-  getDocs, 
-  addDoc, 
-  updateDoc, 
-  deleteDoc, 
-  onSnapshot,
-  query,
-  orderBy,
-  Timestamp,
-  initializeFirestore,
-  persistentLocalCache,
-  persistentMultipleTabManager
-} from 'firebase/firestore';
-import { db, app } from './firebase';
-
-// Use the singleton instance from firebase.ts
-const firestore = db;
-
 import { Rental, Vehicle } from '@/types/rental';
 
-// Collection references
-const RENTALS_COLLECTION = 'rentals';
-const VEHICLES_COLLECTION = 'vehicles';
+const getStoredData = (key: string) => {
+  const data = localStorage.getItem(key);
+  return data ? JSON.parse(data) : null;
+};
 
-// Use the new firestore instance
+const setStoredData = (key: string, data: any) => {
+  localStorage.setItem(key, JSON.stringify(data));
+};
+
 export const subscribeToRentals = (callback: (rentals: Rental[]) => void) => {
-  const q = query(collection(firestore, RENTALS_COLLECTION), orderBy('createdAt', 'desc'));
-  
-  return onSnapshot(q, (snapshot) => {
-    const rentals: Rental[] = [];
-    snapshot.forEach((doc) => {
-      rentals.push({ id: doc.id, ...doc.data() } as Rental);
-    });
-    callback(rentals);
-  }, (error) => {
-    console.error('Error fetching rentals:', error);
-    callback([]);
-  });
+  const rentals = getStoredData('rentals') || [];
+  callback(rentals);
+  return () => {};
 };
 
 export const addRentalToFirestore = async (rental: Omit<Rental, 'id'>): Promise<string> => {
-  try {
-    const docRef = await addDoc(collection(db, RENTALS_COLLECTION), {
-      ...rental,
-      createdAt: rental.createdAt || new Date().toISOString(),
-      updatedAt: new Date().toISOString()
-    });
-    return docRef.id;
-  } catch (error) {
-    console.error('Error adding rental:', error);
-    throw error;
-  }
+  const rentals = getStoredData('rentals') || [];
+  const id = Math.random().toString(36).substr(2, 9);
+  const newRental = { ...rental, id, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() };
+  setStoredData('rentals', [...rentals, newRental]);
+  return id;
 };
 
 export const updateRentalInFirestore = async (id: string, rental: Partial<Rental>): Promise<void> => {
-  try {
-    const docRef = doc(db, RENTALS_COLLECTION, id);
-    await updateDoc(docRef, {
-      ...rental,
-      updatedAt: new Date().toISOString()
-    });
-  } catch (error) {
-    console.error('Error updating rental:', error);
-    throw error;
-  }
+  const rentals = getStoredData('rentals') || [];
+  const updatedRentals = rentals.map((r: any) => r.id === id ? { ...r, ...rental, updatedAt: new Date().toISOString() } : r);
+  setStoredData('rentals', updatedRentals);
 };
 
 export const deleteRentalFromFirestore = async (id: string): Promise<void> => {
-  try {
-    const docRef = doc(db, RENTALS_COLLECTION, id);
-    await deleteDoc(docRef);
-  } catch (error) {
-    console.error('Error deleting rental:', error);
-    throw error;
-  }
+  const rentals = getStoredData('rentals') || [];
+  setStoredData('rentals', rentals.filter((r: any) => r.id !== id));
 };
 
-// ============ VEHICLES ============
-
 export const subscribeToVehicles = (callback: (vehicles: Vehicle[]) => void) => {
-  const q = query(collection(db, VEHICLES_COLLECTION));
-  
-  return onSnapshot(q, (snapshot) => {
-    const vehicles: Vehicle[] = [];
-    snapshot.forEach((doc) => {
-      vehicles.push({ id: doc.id, ...doc.data() } as Vehicle);
-    });
-    callback(vehicles);
-  }, (error) => {
-    console.error('Error fetching vehicles:', error);
-    callback([]);
-  });
+  const vehicles = getStoredData('vehicles') || [];
+  callback(vehicles);
+  return () => {};
 };
 
 export const addVehicleToFirestore = async (vehicle: Omit<Vehicle, 'id'>): Promise<string> => {
-  try {
-    const docRef = await addDoc(collection(db, VEHICLES_COLLECTION), {
-      ...vehicle,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
-    });
-    return docRef.id;
-  } catch (error) {
-    console.error('Error adding vehicle:', error);
-    throw error;
-  }
+  const vehicles = getStoredData('vehicles') || [];
+  const id = Math.random().toString(36).substr(2, 9);
+  const newVehicle = { ...vehicle, id, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() };
+  setStoredData('vehicles', [...vehicles, newVehicle]);
+  return id;
 };
 
 export const updateVehicleInFirestore = async (id: string, vehicle: Partial<Vehicle>): Promise<void> => {
-  try {
-    const docRef = doc(db, VEHICLES_COLLECTION, id);
-    await updateDoc(docRef, {
-      ...vehicle,
-      updatedAt: new Date().toISOString()
-    });
-  } catch (error) {
-    console.error('Error updating vehicle:', error);
-    throw error;
-  }
+  const vehicles = getStoredData('vehicles') || [];
+  const updatedVehicles = vehicles.map((v: any) => v.id === id ? { ...v, ...vehicle, updatedAt: new Date().toISOString() } : v);
+  setStoredData('vehicles', updatedVehicles);
 };
 
 export const deleteVehicleFromFirestore = async (id: string): Promise<void> => {
-  try {
-    const docRef = doc(db, VEHICLES_COLLECTION, id);
-    await deleteDoc(docRef);
-  } catch (error) {
-    console.error('Error deleting vehicle:', error);
-    throw error;
-  }
+  const vehicles = getStoredData('vehicles') || [];
+  setStoredData('vehicles', vehicles.filter((v: any) => v.id !== id));
 };
 
-// ============ FETCH ONCE (for components that don't need real-time) ============
-
-export const getRentalsOnce = async (): Promise<Rental[]> => {
-  try {
-    const q = query(collection(db, RENTALS_COLLECTION), orderBy('createdAt', 'desc'));
-    const snapshot = await getDocs(q);
-    const rentals: Rental[] = [];
-    snapshot.forEach((doc) => {
-      rentals.push({ id: doc.id, ...doc.data() } as Rental);
-    });
-    return rentals;
-  } catch (error) {
-    console.error('Error getting rentals:', error);
-    return [];
-  }
-};
-
-export const getVehiclesOnce = async (): Promise<Vehicle[]> => {
-  try {
-    const snapshot = await getDocs(collection(db, VEHICLES_COLLECTION));
-    const vehicles: Vehicle[] = [];
-    snapshot.forEach((doc) => {
-      vehicles.push({ id: doc.id, ...doc.data() } as Vehicle);
-    });
-    return vehicles;
-  } catch (error) {
-    console.error('Error getting vehicles:', error);
-    return [];
-  }
-};
+export const getRentalsOnce = async (): Promise<Rental[]> => getStoredData('rentals') || [];
+export const getVehiclesOnce = async (): Promise<Vehicle[]> => getStoredData('vehicles') || [];

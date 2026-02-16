@@ -1,16 +1,7 @@
 import { useState, useEffect, createContext, useContext, ReactNode } from 'react';
-import { 
-  User,
-  onAuthStateChanged,
-  signInWithEmailAndPassword,
-  createUserWithEmailAndPassword,
-  signOut,
-  sendPasswordResetEmail
-} from 'firebase/auth';
-import { auth } from '@/lib/firebase';
 
 interface AuthContextType {
-  user: User | null;
+  user: any;
   loading: boolean;
   signIn: (email: string, password: string) => Promise<any>;
   signUp: (email: string, password: string) => Promise<any>;
@@ -21,39 +12,33 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setUser(user);
-      setLoading(false);
-    });
-
-    return unsubscribe;
-  }, []);
+  const [user, setUser] = useState<any>(() => {
+    const saved = localStorage.getItem('demo_user');
+    return saved ? JSON.parse(saved) : { email: 'demo@example.com', uid: 'demo-uid' };
+  });
+  const [loading, setLoading] = useState(false);
 
   const signIn = async (email: string, password: string) => {
-    try {
-      const result = await signInWithEmailAndPassword(auth, email, password);
-      return result;
-    } catch (error) {
-      console.error('Sign in error:', error);
-      throw error;
-    }
+    const userData = { email, uid: 'demo-uid' };
+    setUser(userData);
+    localStorage.setItem('demo_user', JSON.stringify(userData));
+    return { user: userData };
   };
 
   const signUp = async (email: string, password: string) => {
-    const result = await createUserWithEmailAndPassword(auth, email, password);
-    return result;
+    const userData = { email, uid: 'demo-uid' };
+    setUser(userData);
+    localStorage.setItem('demo_user', JSON.stringify(userData));
+    return { user: userData };
   };
 
   const logout = async () => {
-    await signOut(auth);
+    setUser(null);
+    localStorage.removeItem('demo_user');
   };
 
   const resetPassword = async (email: string) => {
-    await sendPasswordResetEmail(auth, email);
+    console.log('Password reset for:', email);
   };
 
   return (
