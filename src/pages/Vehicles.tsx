@@ -212,16 +212,16 @@ const Vehicles = () => {
 
       {/* Vehicles Grid */}
       {vehicles.length === 0 ? (
-        <div className="card-elevated overflow-hidden text-center">
-          <div className="bg-primary p-4 text-white">
-            <h3 className="text-xl font-semibold">No Vehicles Added</h3>
+        <div className="card-elevated overflow-hidden text-center bg-orange-500 border-orange-600">
+          <div className="bg-orange-600 p-4 text-white">
+            <h3 className="text-xl font-semibold text-white">No Vehicles Added</h3>
           </div>
-          <div className="p-12">
-            <div className="w-20 h-20 rounded-full bg-muted mx-auto mb-4 flex items-center justify-center">
-              <Car className="w-10 h-10 text-muted-foreground" />
+          <div className="p-12 text-white">
+            <div className="w-20 h-20 rounded-full bg-white/20 mx-auto mb-4 flex items-center justify-center">
+              <Car className="w-10 h-10 text-white" />
             </div>
-            <p className="text-muted-foreground mb-6">Start by adding your first vehicle to the fleet</p>
-            <Button onClick={() => handleOpenDialog()} className="btn-primary-gradient">
+            <p className="text-white/80 mb-6">Start by adding your first vehicle to the fleet</p>
+            <Button onClick={() => handleOpenDialog()} className="bg-white text-orange-600 hover:bg-white/90">
               <Plus className="w-4 h-4 mr-2" />
               Add Your First Vehicle
             </Button>
@@ -232,10 +232,10 @@ const Vehicles = () => {
           {vehicles.map((vehicle) => (
             <div 
               key={vehicle.id}
-              className="card-elevated overflow-hidden group hover:shadow-xl transition-all duration-300"
+              className="card-elevated overflow-hidden group hover:shadow-xl transition-all duration-300 bg-orange-500 border-orange-600"
             >
               {/* Vehicle Image */}
-              <div className="relative h-48 bg-gradient-to-br from-muted to-muted/50">
+              <div className="relative h-48 bg-orange-400">
                 {vehicle.image ? (
                   <img 
                     src={vehicle.image} 
@@ -244,7 +244,7 @@ const Vehicles = () => {
                   />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center">
-                    <Car className="w-16 h-16 text-muted-foreground/50" />
+                    <Car className="w-16 h-16 text-white/50" />
                   </div>
                 )}
                 
@@ -264,7 +264,7 @@ const Vehicles = () => {
                   <Button 
                     size="sm"
                     onClick={() => handleOpenDialog(vehicle)}
-                    className="bg-white text-foreground hover:bg-white/90"
+                    className="bg-white text-orange-600 hover:bg-white/90"
                   >
                     <Edit className="w-4 h-4" />
                   </Button>
@@ -279,9 +279,9 @@ const Vehicles = () => {
               </div>
 
               {/* Vehicle Info */}
-              <div className="p-4">
-                <h3 className="font-bold text-lg mb-1">{vehicle.name}</h3>
-                <div className="flex items-center gap-2 text-sm text-muted-foreground mb-3">
+              <div className="p-4 text-white">
+                <h3 className="font-bold text-lg mb-1 text-white">{vehicle.name}</h3>
+                <div className="flex items-center gap-2 text-sm text-white/80 mb-3">
                   {vehicle.color && (
                     <span className="flex items-center gap-1">
                       <Palette className="w-3 h-3" />
@@ -296,8 +296,8 @@ const Vehicles = () => {
                   )}
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-xs text-muted-foreground">Daily Rate</span>
-                  <span className="font-bold text-primary">{formatCurrency(vehicle.dailyRate)}</span>
+                  <span className="text-xs text-white/70">Daily Rate</span>
+                  <span className="font-bold text-white">{formatCurrency(vehicle.dailyRate)}</span>
                 </div>
               </div>
             </div>

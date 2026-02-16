@@ -397,9 +397,9 @@ const NewBooking = () => {
       </div>
 
       {/* Progress Steps */}
-      <div className="card-elevated overflow-hidden mb-6">
-        <div className="bg-primary p-4 text-white">
-          <h2 className="font-display text-lg font-semibold flex items-center gap-2">
+      <div className="card-elevated overflow-hidden mb-6 bg-orange-500 border-orange-600">
+        <div className="bg-orange-600 p-4 text-white border-b border-orange-700">
+          <h2 className="font-display text-lg font-semibold flex items-center gap-2 text-white">
             <ClipboardCheck className="w-5 h-5" />
             Booking Progress
           </h2>
@@ -411,10 +411,10 @@ const NewBooking = () => {
                 <div className="flex flex-col items-center min-w-max">
                   <div className={`w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center transition-all duration-300 ${
                     currentStep === step.id 
-                      ? 'bg-primary text-white shadow-lg shadow-primary/20' 
+                      ? 'bg-white text-orange-600 shadow-lg shadow-black/20' 
                       : currentStep > step.id 
                       ? 'bg-emerald-500 text-white'
-                      : 'bg-slate-100 text-slate-400'
+                      : 'bg-orange-400 text-orange-100'
                   }`}>
                     {currentStep > step.id ? (
                       <Check className="w-5 h-5" />
@@ -423,14 +423,14 @@ const NewBooking = () => {
                     )}
                   </div>
                   <span className={`text-xs mt-2 hidden md:block ${
-                    currentStep >= step.id ? 'text-foreground font-medium' : 'text-muted-foreground'
+                    currentStep >= step.id ? 'text-white font-medium' : 'text-orange-200'
                   }`}>
                     {step.title}
                   </span>
                 </div>
                 {index < steps.length - 1 && (
                   <div className={`w-4 md:w-8 lg:w-12 h-0.5 mx-1 transition-all duration-300 ${
-                    currentStep > step.id ? 'bg-success' : 'bg-border'
+                    currentStep > step.id ? 'bg-emerald-400' : 'bg-orange-400'
                   }`} />
                 )}
               </div>
@@ -440,9 +440,9 @@ const NewBooking = () => {
       </div>
 
       {/* Form Content */}
-      <div className="card-elevated overflow-hidden">
-        <div className="bg-primary p-4 text-white">
-          <h2 className="font-display text-lg font-semibold flex items-center gap-2">
+      <div className="card-elevated overflow-hidden bg-orange-500 border-orange-600">
+        <div className="bg-orange-600 p-4 text-white border-b border-orange-700">
+          <h2 className="font-display text-lg font-semibold flex items-center gap-2 text-white">
             {steps.find(s => s.id === currentStep)?.icon && 
               (() => {
                 const Icon = steps.find(s => s.id === currentStep)!.icon;
@@ -452,50 +452,50 @@ const NewBooking = () => {
             {steps.find(s => s.id === currentStep)?.title} Details
           </h2>
         </div>
-        <div className="p-6 md:p-8">
+        <div className="p-6 md:p-8 text-white">
           {/* Step 1: Client Details */}
           {currentStep === 1 && (
             <div className="space-y-6 animate-fade-in">
               <div className="grid md:grid-cols-2 gap-6">
                 <div className="space-y-2">
-                  <Label htmlFor="fullName">Full Name *</Label>
+                  <Label htmlFor="fullName" className="text-white">Full Name *</Label>
                   <Input
                     id="fullName"
                     placeholder="Enter client's full name"
                     value={client.fullName}
                     onChange={(e) => setClient({ ...client, fullName: e.target.value })}
-                    className="input-styled"
+                    className="input-styled bg-white/10 border-white/20 text-white placeholder:text-white/50"
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="cnic">CNIC *</Label>
+                  <Label htmlFor="cnic" className="text-white">CNIC *</Label>
                   <Input
                     id="cnic"
                     placeholder="12345-1234567-1"
                     value={client.cnic}
                     onChange={(e) => setClient({ ...client, cnic: formatCNICInput(e.target.value) })}
                     maxLength={15}
-                    className="input-styled"
+                    className="input-styled bg-white/10 border-white/20 text-white placeholder:text-white/50"
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="phone">Phone Number *</Label>
+                  <Label htmlFor="phone" className="text-white">Phone Number *</Label>
                   <Input
                     id="phone"
                     placeholder="03XX-XXXXXXX"
                     value={client.phone}
                     onChange={(e) => setClient({ ...client, phone: e.target.value })}
-                    className="input-styled"
+                    className="input-styled bg-white/10 border-white/20 text-white placeholder:text-white/50"
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="address">Address *</Label>
+                  <Label htmlFor="address" className="text-white">Address *</Label>
                   <Input
                     id="address"
                     placeholder="Enter complete address"
                     value={client.address}
                     onChange={(e) => setClient({ ...client, address: e.target.value })}
-                    className="input-styled"
+                    className="input-styled bg-white/10 border-white/20 text-white placeholder:text-white/50"
                   />
                 </div>
               </div>
